@@ -1,149 +1,336 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Operação de Benefícios</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operação de Benefícios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #c62828;
+            --orange: #f4b400;
+            --green: #0f9d58;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+        }
 
-<style>
-body{font-family:'Inter', sans-serif;background:#f4f4f4;margin:0;color:#111;}
-.header{display:flex;align-items:center;padding:20px;gap:10px;}
-.avatar{width:36px;height:36px;border-radius:50%;background:#ddd;}
-.title-app{font-weight:600;font-size:20px;}
-.container{padding:16px;}
-h1{font-size:26px;margin-bottom:4px;}
-.subtitle{color:#666;margin-bottom:20px;}
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
 
-.card{background:white;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 24px 32px;
+            gap: 12px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-.red{background:#c62828;color:white;}
-.orange{background:#f4b400;}
-.green{background:#0f9d58;color:white;}
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
 
-.chart{display:flex;align-items:flex-end;gap:12px;height:200px;}
-.bar-wrapper{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
-.bar-value{font-size:11px;font-weight:600;margin-bottom:6px;}
-.bar{width:100%;border-radius:10px 10px 0 0;}
+        .title-app {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
 
-.labels{display:flex;justify-content:space-between;font-size:11px;margin-top:8px;color:#555;}
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 32px 16px;
+        }
 
-.legend{display:flex;gap:20px;margin-top:10px;font-size:12px;}
-.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px;}
+        h1 {
+            font-size: 28px;
+            margin: 0 0 4px 0;
+            font-weight: 700;
+        }
 
-table{width:100%;border-collapse:collapse;font-size:12px;}
-th, td{text-align:center;padding:8px;}
-th{background:#eee;}
-.row-title{text-align:left;font-weight:600;background:#f5f5f5;}
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
 
-.analysis{border-radius:12px;padding:16px;margin-bottom:12px;}
-.good{background:#e8f5e9;}
-.attention{background:#fff8e1;}
-.risk{background:#fdecea;}
-.exec{background:#eef3ff;}
-</style>
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Status Colors */
+        .red { background: var(--red) !important; color: white !important; }
+        .orange { background: var(--orange) !important; color: #333 !important; }
+        .green { background: var(--green) !important; color: white !important; }
+
+        /* Chart */
+        .chart-container {
+            margin-top: 20px;
+        }
+
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 1%;
+            height: 250px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            transition: transform 0.2s;
+        }
+        
+        .bar-wrapper:hover {
+            transform: translateY(-4px);
+        }
+
+        .bar-value {
+            font-size: 10px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .bar {
+            width: 100%;
+            border-radius: 6px 6px 0 0;
+            min-height: 5px;
+        }
+
+        .labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 24px;
+            font-size: 13px;
+            padding-top: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        /* Heatmap Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 4px;
+            font-size: 11px;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 10px 4px;
+            border-radius: 4px;
+        }
+
+        th {
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .row-title {
+            text-align: left;
+            font-weight: 600;
+            background: #f9f9f9;
+            padding-left: 12px;
+            min-width: 120px;
+            font-size: 12px;
+        }
+
+        /* Analysis Boxes */
+        .analysis {
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-left: 4px solid transparent;
+        }
+
+        .good { background: #e8f5e9; border-left-color: #2e7d32; }
+        .attention { background: #fff8e1; border-left-color: #f9a825; }
+        .risk { background: #fdecea; border-left-color: #d32f2f; }
+        .exec { background: #eef3ff; border-left-color: #1976d2; }
+
+        .analysis b {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .methodology {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .methodology-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .chart { height: 180px; }
+            .bar-value { font-size: 8px; }
+            .labels { font-size: 9px; }
+            .header { padding: 16px; }
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="header">
-<div class="avatar"></div>
-<div class="title-app">Operação de Benefícios</div>
+    <div class="avatar">OB</div>
+    <div class="title-app">Operação de Benefícios</div>
 </div>
 
 <div class="container">
+    <h1>Evolução de Assertividade</h1>
+    <div class="subtitle">Visão consolidada e análise detalhada por macroprocesso (Atualizado: Abril)</div>
 
-<h1>Evolução de Assertividade</h1>
-<div class="subtitle">Visão consolidada e análise por macroprocesso</div>
+    <!-- GRAPH -->
+    <div class="card">
+        <h3 style="margin-top: 0; font-size: 16px;">Consolidado Mensal (%)</h3>
+        <div class="chart-container">
+            <div class="chart">
+                <div class="bar-wrapper"><div class="bar-value">71%</div><div class="bar red" style="height:71%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">80.6%</div><div class="bar orange" style="height:80.6%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">88%</div><div class="bar orange" style="height:88%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">96.7%</div><div class="bar green" style="height:96.7%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">95.9%</div><div class="bar green" style="height:95.9%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">88.4%</div><div class="bar orange" style="height:88.4%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">91.2%</div><div class="bar orange" style="height:91.2%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">88.1%</div><div class="bar orange" style="height:88.1%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">93%</div><div class="bar orange" style="height:93%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">86.9%</div><div class="bar orange" style="height:86.9%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">87.2%</div><div class="bar orange" style="height:87.2%"></div></div>
+                <div class="bar-wrapper"><div class="bar-value">89.9%</div><div class="bar orange" style="height:89.87%"></div></div>
+            </div>
+            <div class="labels">
+                <span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span>
+                <span>Set</span><span>Out</span><span>Nov</span><span>Dez</span>
+                <span>Jan</span><span>Fev</span><span>Mar</span><span>Abr</span>
+            </div>
+        </div>
 
-<!-- GRAFICO -->
-<div class="card">
-<div class="chart">
-<div class="bar-wrapper"><div class="bar-value">71%</div><div class="bar red" style="height:71%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">80.60%</div><div class="bar orange" style="height:80.60%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">88%</div><div class="bar orange" style="height:88%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">96.73%</div><div class="bar green" style="height:96.73%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">95.88%</div><div class="bar green" style="height:95.88%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">88.39%</div><div class="bar orange" style="height:88.39%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">91.17%</div><div class="bar orange" style="height:91.17%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">88.05%</div><div class="bar orange" style="height:88.05%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">93%</div><div class="bar orange" style="height:93%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">86.94%</div><div class="bar orange" style="height:86.94%"></div></div>
-<div class="bar-wrapper"><div class="bar-value">87.23%</div><div class="bar orange" style="height:87.23%"></div></div>
-</div>
+        <div class="legend">
+            <div><span class="dot" style="background:var(--green)"></span> Excelente (≥95%)</div>
+            <div><span class="dot" style="background:var(--orange)"></span> Atenção (80–94%)</div>
+            <div><span class="dot" style="background:var(--red)"></span> Crítico (<80%)</div>
+        </div>
+    </div>
 
-<div class="labels">
-<span>Mai</span><span>Jun</span><span>Jul</span><span>Ago</span>
-<span>Set</span><span>Out</span><span>Nov</span><span>Dez</span>
-<span>Jan</span><span>Fev</span><span>Mar</span>
-</div>
+    <!-- HEATMAP -->
+    <div class="card">
+        <h3 style="margin-top: 0; font-size: 16px; margin-bottom: 20px;">Matriz de Desempenho por Processo</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Processo</th>
+                        <th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th><th>Set</th>
+                        <th>Out</th><th>Nov</th><th>Dez</th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="row-title">Admissão</td><td class="red">67%</td><td class="orange">92%</td><td class="orange">83%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="orange">92%</td><td class="orange">83%</td><td class="orange">83%</td><td class="orange">92%</td><td class="orange">92%</td><td class="green">100%</td></tr>
+                    <tr><td class="row-title">Atendimento</td><td class="red">67%</td><td class="red">67%</td><td class="red">67%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td></tr>
+                    <tr><td class="row-title">Demissões</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="orange">67%</td><td class="orange">83%</td><td class="orange">83%</td><td class="green">100%</td><td class="green">100%</td><td class="orange">83%</td><td class="orange">83%</td></tr>
+                    <tr><td class="row-title">Folha</td><td class="red">56%</td><td class="red">67%</td><td class="orange">89%</td><td class="green">100%</td><td class="orange">89%</td><td class="red">67%</td><td class="orange">89%</td><td class="orange">83%</td><td class="orange">94%</td><td class="red">56%</td><td class="red">61%</td><td class="red">67%</td></tr>
+                    <tr><td class="row-title">Pagamentos</td><td class="red">61%</td><td class="red">67%</td><td class="orange">94%</td><td class="orange">94%</td><td class="green">100%</td><td class="orange">94%</td><td class="orange">92%</td><td class="orange">92%</td><td class="orange">83%</td><td class="red">78%</td><td class="orange">94%</td><td class="orange">94%</td></tr>
+                    <tr><td class="row-title">Movimentações</td><td class="orange">81%</td><td class="orange">90%</td><td class="orange">93%</td><td class="orange">90%</td><td class="green">98%</td><td class="orange">90%</td><td class="orange">90%</td><td class="orange">90%</td><td class="orange">90%</td><td class="orange">87%</td><td class="orange">92%</td><td class="orange">87%</td></tr>
+                    <tr><td class="row-title">Solicitações</td><td class="red">67%</td><td class="red">67%</td><td class="orange">78%</td><td class="orange">89%</td><td class="orange">89%</td><td class="orange">89%</td><td class="orange">89%</td><td class="orange">89%</td><td class="green">100%</td><td class="orange">92%</td><td class="orange">92%</td><td class="orange">88%</td></tr>
+                    <tr><td class="row-title">Fechamentos</td><td style="color:#ccc">-</td><td style="color:#ccc">-</td><td style="color:#ccc">-</td><td style="color:#ccc">-</td><td style="color:#ccc">-</td><td style="color:#ccc">-</td><td style="color:#ccc">-</td><td style="color:#ccc">-</td><td class="orange">83%</td><td class="orange">83%</td><td class="orange">83%</td><td class="orange">92%</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<div class="legend">
-<div><span class="dot" style="background:#0f9d58"></span> ≥95%</div>
-<div><span class="dot" style="background:#f4b400"></span> 80–94%</div>
-<div><span class="dot" style="background:#c62828"></span> &lt;80%</div>
-</div>
-</div>
+    <!-- QUALITATIVE ANALYSIS -->
+    <div class="card">
+        <h3 style="margin-top: 0; font-size: 16px; margin-bottom: 16px;">Análise Crítica - Abril</h3>
+        
+        <div class="analysis good">
+            <b>Processos de Excelência</b>
+            Admissão e Atendimento atingiram 100% de assertividade em Abril. Fechamentos apresentou uma evolução significativa, subindo de 83% para 92%.
+        </div>
 
-<!-- HEATMAP -->
-<div class="card">
-<table>
-<tr>
-<th></th><th>Mai</th><th>Jun</th><th>Jul</th><th>Ago</th>
-<th>Set</th><th>Out</th><th>Nov</th><th>Dez</th><th>Jan</th><th>Fev</th><th>Mar</th>
-</tr>
+        <div class="analysis attention">
+            <b>Estabilidade e Ajustes</b>
+            Pagamentos e Demissões mantêm-se estáveis. Movimentações e Solicitações apresentaram leves oscilações, mas permanecem dentro da zona de atenção positiva.
+        </div>
 
-<tr><td class="row-title">Admissão</td><td class="red">67%</td><td class="orange">92%</td><td class="orange">83%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="orange">92%</td><td class="orange">83%</td><td class="orange">83%</td><td class="orange">92%</td><td class="orange">92%</td></tr>
+        <div class="analysis risk">
+            <b>Pontos de Atenção Crítica</b>
+            O processo de Folha subiu de 61% para 67%, porém continua sendo o maior gargalo operacional, permanecendo na zona crítica.
+        </div>
 
-<tr><td class="row-title">Atendimento</td><td class="red">67%</td><td class="red">67%</td><td class="red">67%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td></tr>
+        <div class="analysis exec">
+            <b>Leitura executiva</b>
+            A operação encerrou Abril com 89,87% de assertividade, o melhor resultado dos últimos 5 meses. Este avanço de quase 3 pontos percentuais em relação a Março foi impulsionado pela excelência em Admissão/Atendimento e pela melhora nos Fechamentos, apesar da persistente pressão no processo de Folha.
+        </div>
+    </div>
 
-<tr><td class="row-title">Demissões</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="green">100%</td><td class="orange">67%</td><td class="orange">83%</td><td class="orange">83%</td><td class="green">100%</td><td class="green">100%</td><td class="orange">83%</td></tr>
-
-<tr><td class="row-title">Folha</td><td class="red">56%</td><td class="red">67%</td><td class="orange">89%</td><td class="green">100%</td><td class="orange">89%</td><td class="red">67%</td><td class="orange">89%</td><td class="orange">83%</td><td class="orange">94%</td><td class="red">56%</td><td class="red">61%</td></tr>
-
-<tr><td class="row-title">Pagamentos</td><td class="red">61%</td><td class="red">67%</td><td class="orange">94%</td><td class="orange">94%</td><td class="green">100%</td><td class="orange">94%</td><td class="orange">92%</td><td class="orange">92%</td><td class="orange">83%</td><td class="red">78%</td><td class="orange">94%</td></tr>
-
-<tr><td class="row-title">Movimentações</td><td class="orange">81%</td><td class="orange">90%</td><td class="orange">93%</td><td class="orange">90%</td><td class="green">98%</td><td class="orange">90%</td><td class="orange">90%</td><td class="orange">90%</td><td class="orange">90%</td><td class="orange">87%</td><td class="orange">92%</td></tr>
-
-<tr><td class="row-title">Solicitações</td><td class="red">67%</td><td class="red">67%</td><td class="orange">78%</td><td class="orange">89%</td><td class="orange">89%</td><td class="orange">89%</td><td class="orange">89%</td><td class="orange">89%</td><td class="green">100%</td><td class="orange">92%</td><td class="orange">92%</td></tr>
-
-<tr><td class="row-title">Fechamentos</td><td class="red">-</td><td class="red">-</td><td class="red">-</td><td class="red">-</td><td class="red">-</td><td class="red">-</td><td class="red">-</td><td class="red">-</td><td class="orange">83%</td><td class="orange">83%</td><td class="orange">83%</td></tr>
-</table>
-</div>
-
-<!-- ANALISE -->
-<div class="card">
-
-<div class="analysis good">
-<b>Processos maduros</b><br>
-Atendimento, Admissão e Solicitações mantêm performance consistente. Destaque para a recuperação de Pagamentos em Março.
-</div>
-
-<div class="analysis attention">
-<b>Estabilidade operacional</b><br>
-Fechamentos, Movimentações e Demissões apresentam variação controlada dentro do patamar esperado para o período.
-</div>
-
-<div class="analysis risk">
-<b>Pontos de atenção</b><br>
-Folha permanece como o processo com maior necessidade de ajuste, embora apresente leve melhora em relação a fevereiro.
-</div>
-
-<div class="analysis exec">
-<b>Leitura executiva</b><br>
-A operação encerrou Março com 87,23% de assertividade acumulada. O resultado reflete estabilidade em relação ao mês anterior (86,94%), com ganhos relevantes em Pagamentos e Movimentações, compensando a pressão contínua observada no processo de Folha.
-</div>
-
-</div>
-
-<div class="card">
-<b>Metodologia</b><br><br>
-Peso 1 — Crítico: Realizado com muitos problemas<br>
-Peso 2 — Atenção: Concluído com ressalvas<br>
-Peso 3 — Excelente: Sem intercorrências<br><br>
-Assertividade (%) = ( Soma dos pesos obtidos ÷ Soma dos pesos máximos ) × 100
-</div>
-
+    <!-- METHODOLOGY -->
+    <div class="card methodology">
+        <h3 style="margin-top: 0; font-size: 15px;">Metodologia de Cálculo</h3>
+        <p>O índice de assertividade reflete a qualidade das entregas baseada em pesos específicos por ocorrência:</p>
+        <div class="methodology-grid">
+            <div><strong>Peso 1 (Crítico):</strong> Realizado com muitos problemas</div>
+            <div><strong>Peso 2 (Atenção):</strong> Concluído com ressalvas</div>
+            <div><strong>Peso 3 (Excelente):</strong> Sem intercorrências</div>
+        </div>
+        <p style="margin-top: 20px; font-style: italic; font-size: 12px; border-top: 1px solid #eee; padding-top: 10px;">
+            Fórmula aplicada: Assertividade (%) = ( Σ Pesos Obtidos / Σ Pesos Máximos ) × 100
+        </p>
+    </div>
 </div>
 
 </body>
